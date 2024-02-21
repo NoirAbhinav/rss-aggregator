@@ -1,4 +1,4 @@
-package db
+package models
 
 import (
 	"gorm.io/gorm"
@@ -7,14 +7,4 @@ import (
 type User struct {
 	gorm.Model
 	Name string `gorm:"not null"`
-}
-
-type Method interface {
-	Create() error
-	Update() error
-	Delete() error
-}
-
-func (u *User) Create(db *gorm.DB) error {
-	return db.Create(u).Error
 }
