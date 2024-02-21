@@ -14,10 +14,11 @@ import (
 func main() {
 	fmt.Println("Hello, world!")
 	godotenv.Load(".env")
-	portString := os.Getenv("PORT")
+	portString := os.Getenv("SERVICE_PORT")
 	if portString == "" {
 		log.Fatal("PORT environment variable not set")
 	}
+	migrate_models()
 	fmt.Printf("PORT: %s\n", portString)
 
 	router := chi.NewRouter()
