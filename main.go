@@ -18,7 +18,6 @@ func main() {
 	if portString == "" {
 		log.Fatal("PORT environment variable not set")
 	}
-	migrate_models()
 	fmt.Printf("PORT: %s\n", portString)
 
 	router := chi.NewRouter()
