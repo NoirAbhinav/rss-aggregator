@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 
+	api "github.com/NoirAbhinav/rss-aggregator/internal/api"
 	utility "github.com/NoirAbhinav/rss-aggregator/internal/db_handlers/utils"
 	handlers "github.com/NoirAbhinav/rss-aggregator/internal/handler"
 	"github.com/go-chi/chi"
@@ -13,6 +14,11 @@ import (
 )
 
 func main() {
+	err := utility.Migrate_models()
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
 	godotenv.Load(".env")
 	portString := os.Getenv("SERVICE_PORT")
 	if portString == "" {
@@ -31,13 +37,15 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	api_router := handlers.ApiConfig{
+	api_router := api.ApiConfig{
 		DBPointer: get_db,
 	}
 	v1Router := chi.NewRouter()
 	v1Router.Get("/healthz", handlers.ReadinessHandler)
 	v1Router.Get("/err", handlers.ErrHandler)
-	v1Router.Get("/user", api_router.UserCreateHandler)
+	v1Router.Post("/user", api_router.UserCreateHandler)
+	v1Router.Get("/user", api_router.MiddlewareAuth(api_router.UserSelectHandler))
+	v1Router.Post("/feed", api_router.MiddlewareAuth(api_router.UserFeedCreateHandler))
 	router.Mount("/v1", v1Router)
 
 	server := &http.Server{

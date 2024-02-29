@@ -7,5 +7,5 @@ import (
 
 func ReadinessHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Printf("ReadinessHandler called")
-	respondWithJSON(w, 200, map[string]string{"status": "ok"})
+	RespondWithJSON(w, 200, map[string]string{"status": "ok"})
 }
